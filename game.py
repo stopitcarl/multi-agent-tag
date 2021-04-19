@@ -7,6 +7,7 @@ from predator import PredatorBaseline
 from prey import PreyBaseline
 from utils import *
 
+# setup enviornment
 env = simple_tag_v2.parallel_env(
     num_good=NUM_GOOD, num_adversaries=NUM_ADVERSARIES,
     num_obstacles=NUM_OBSTACLES, max_cycles=MAX_CYCLES)
@@ -18,26 +19,25 @@ actions = {agent: 0 for agent in env.agents}
 actions
 
 # setup agents
-adversary_0 = PredatorBaseline(env)
-adversary_1 = PredatorBaseline(env)
-agent_0 = PreyBaseline(env)
+agents = {}
+agents['adversary_0'] = PredatorBaseline(env)
+agents['adversary_1'] = PredatorBaseline(env)
+agents['agent_0'] = PreyBaseline(env)
 
-
+# game loop
 for step in range(MAX_CYCLES):
     env.render()
     observations, rewards, dones, infos = env.step(actions)
 
-    time.sleep(0.05)
+    time.sleep(0.01)
 
     # decision process
-    adversary_0.decide(observations['adversary_0'])
-    adversary_1.decide(observations['adversary_1'])
-    agent_0.decide(observations['agent_0'])
+    for name, agent in agents.items():
+        agent.decide(observations[name])
 
     # action process
-    actions['adversary_0'] = adversary_0.act()
-    actions['adversary_1'] = adversary_1.act()
-    actions['agent_0'] = agent_0.act()
+    for name, agent in agents.items():
+        actions[name] = agent.act()
 
 print("done")
 env.close()
