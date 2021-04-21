@@ -4,7 +4,7 @@ import numpy.random as rand
 from pettingzoo.mpe import simple_tag_v2
 
 from predator import PredatorBaseline
-from prey import PreyBaseline
+from prey import PreyBaseline, PreyDangerCircle
 from utils import *
 
 # setup enviornment
@@ -20,9 +20,10 @@ actions
 
 # setup agents
 agents = {}
-agents['adversary_0'] = PredatorBaseline(env)
-agents['adversary_1'] = PredatorBaseline(env)
-agents['agent_0'] = PreyBaseline(env)
+agents['adversary_0'] = PredatorBaseline()
+agents['adversary_1'] = PredatorBaseline()
+# agents['agent_0'] = PreyBaseline(env)
+agents['agent_0'] = PreyDangerCircle()
 
 # game loop
 for step in range(MAX_CYCLES):
@@ -33,7 +34,8 @@ for step in range(MAX_CYCLES):
 
     # decision process
     for name, agent in agents.items():
-        agent.decide(observations[name])
+        agent.observe(observations[name])
+        agent.decide()
 
     # action process
     for name, agent in agents.items():
