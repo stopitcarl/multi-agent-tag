@@ -45,20 +45,14 @@ class PredatorBaseline(Predator):
 
     def decide(self):
         angle = get_agent_angle(self.prey_positions[0])
-        if angle >= 0:
-            if angle < np.pi/4:
-                self.current_decision = UP
-            elif angle < 3*np.pi/4:
-                self.current_decision = RIGHT
-            else:
-                self.current_decision = DOWN
-        else:
-            if angle > -np.pi/4:
-                self.current_decision = UP
-            elif angle > -3*np.pi/4:
-                self.current_decision = LEFT
-            else:
-                self.current_decision = DOWN
+        if np.pi/4 <= angle < 3*np.pi/4:
+            self.current_decision = UP
+        if 3*np.pi/4 <= angle < 5*np.pi/4:
+            self.current_decision = LEFT
+        if 5*np.pi/4 <= angle < 7*np.pi/4:
+            self.current_decision = DOWN
+        if 7*np.pi/4 <= angle < 2*np.pi or 0 <= angle < np.pi/4:
+            self.current_decision = RIGHT
 
     def act(self):
         return self.current_decision

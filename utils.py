@@ -1,4 +1,8 @@
 from math import atan2
+import numpy as np
+
+SEED = 42
+# SEED = np.random.randint(100)
 
 NUM_GOOD = 1
 NUM_ADVERSARIES = 2
@@ -46,4 +50,8 @@ def get_prey_vel(observation: list):
 
 
 def get_agent_angle(position):
-    return atan2(position[0], position[1])
+    return atan2(position[1], position[0]) % (2*np.pi)
+
+
+def get_distance(coords):
+    return np.linalg.norm(np.array((0, 0)) - np.array(coords))

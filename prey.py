@@ -13,7 +13,7 @@ def add_danger(current_danger, new_danger, angle):
     offset = (N - int(angle * N / (2 * np.pi) - N / 2)) % N
     # print(offset)
     danger = current_danger - \
-        np.concatenate((new_danger[offset:], new_danger[:offset]))
+             np.concatenate((new_danger[offset:], new_danger[:offset]))
     return danger
 
 
@@ -84,7 +84,6 @@ class PreyDangerCircle(Prey):
         self.danger = np.ones(self.N) * 20
 
     def decide(self):
-        # TODO better way to choose max
         index_to_action = {
             0: RIGHT,
             1: UP,
@@ -92,12 +91,14 @@ class PreyDangerCircle(Prey):
             3: DOWN
         }
         theta = np.linspace(0.0, 2 * np.pi, self.N, endpoint=False)
-        angle = theta[np.argmax(self.danger)]
 
-        # self.showDanger()
-        # print("best angle:", np.rad2deg(angle % (2 * np.pi)))
+        up_total = sum(self.danger[round(self.N / 8):round(3 * self.N / 8)])
+        left_total = sum(self.danger[round(3 * self.N / 8):round(5 * self.N / 8)])
+        down_total = sum(self.danger[round(5 * self.N / 8):round(7 * self.N / 8)])
+        right_total = sum(list(self.danger[0:round(self.N / 8)]) +
+                          list(self.danger[round(7 * self.N / 8):self.N]))
 
-        action_index = round(angle/(np.pi/2)) % 4
+        action_index = np.argmax([right_total, up_total, left_total, down_total])
         self.current_decision = index_to_action[action_index]
 
     def observe(self, observation):
@@ -107,18 +108,24 @@ class PreyDangerCircle(Prey):
     def calculate_danger(self):
         self.danger = np.ones(self.N) * 20
         for adv_coords in self.predator_distances:
-
-            distance = np.linalg.norm(np.array(adv_coords) - np.array(self.coords))
-            adv_danger = self.get_distance_normal(distance)
-
-            angle = np.arctan2(adv_coords[1]-self.coords[1], adv_coords[0]-self.coords[0])
-            # print("adversary at:", np.rad2deg(angle % (2 * np.pi)), "degrees")
+            adv_danger = self.get_distance_normal(get_distance(adv_coords), 1)
+            angle = get_agent_angle(adv_coords)
             self.danger = add_danger(self.danger, adv_danger, angle)
 
-        distance_to_center = np.linalg.norm(np.array((0, 0)) - np.array(self.coords))
-        center_danger = self.get_distance_normal(distance_to_center)
-        angle = (np.arctan2(0 - self.coords[1], 0 - self.coords[0]) + np.pi) % (2*np.pi)
+        for obs_coords in self.obstacle_distances:
+            adv_danger = self.get_distance_normal(get_distance(obs_coords), 1)
+            angle = get_agent_angle(obs_coords)
+            self.danger = add_danger(self.danger, adv_danger, angle)
+
+        center_distance = get_distance(self.coords)
+        angle = get_agent_angle(self.coords)
+        if center_distance < 1:
+            center_danger = self.get_distance_normal(1 - get_distance(self.coords), 1)
+        else:
+            center_danger = self.get_distance_normal(0.1, 1)
+
         self.danger = add_danger(self.danger, center_danger, angle)
+        # self.showDanger()
 
     def showDanger(self):
         # Compute pie slices
@@ -127,11 +134,13 @@ class PreyDangerCircle(Prey):
         colors = [plt.cm.viridis(0.6)]
         ax = plt.subplot(projection='polar')
         ax.bar(theta, self.danger, width=width, bottom=0.0, color=colors, alpha=0.5)
+        ax.set_ylim(0, 20)
+        # ax.set_theta_zero_location("N")
         plt.show()
 
-    def get_distance_normal(self, distance):
+    def get_distance_normal(self, distance, magnitude):
         x = np.linspace(-self.N / 2, self.N / 2, self.N)
-        return stats.norm.pdf(x, 0, distance) * 60
+        return stats.norm.pdf(x, 0, 1 / distance) * 1 / distance * self.N * magnitude
 
     def act(self):
         return self.current_decision
