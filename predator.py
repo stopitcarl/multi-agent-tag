@@ -13,11 +13,11 @@ class PredatorBaseline(Agent):
     def decide(self):
         if np.pi/4 <= self.angle < 3*np.pi/4:
             self.current_decision = UP
-        if 3*np.pi/4 <= self.angle < 5*np.pi/4:
+        elif 3*np.pi/4 <= self.angle < 5*np.pi/4:
             self.current_decision = LEFT
-        if 5*np.pi/4 <= self.angle < 7*np.pi/4:
+        elif 5*np.pi/4 <= self.angle < 7*np.pi/4:
             self.current_decision = DOWN
-        if 7*np.pi/4 <= self.angle < 2*np.pi or 0 <= self.angle < np.pi/4:
+        elif 7*np.pi/4 <= self.angle < 2*np.pi or 0 <= self.angle < np.pi/4:
             self.current_decision = RIGHT
 
         return self.current_decision
