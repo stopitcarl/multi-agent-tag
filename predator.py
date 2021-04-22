@@ -1,28 +1,23 @@
-import numpy as np
-
+from agent import Agent
 from utils import *
 
 
-class PredatorBaseline:
-    def __init__(self, environment):
-        self.current_decision = UP
+class PredatorBaseline(Agent):
+    def __init__(self):
+        super().__init__()
+        self.angle = 0
 
-    def decide(self, observation):
-        angle = get_agent_angle(get_other_pos(observation)[-1])
-        if angle >= 0:
-            if angle < np.pi/4:
-                self.current_decision = UP
-            elif angle < 3*np.pi/4:
-                self.current_decision = RIGHT
-            else:
-                self.current_decision = DOWN
-        else:
-            if angle > -np.pi/4:
-                self.current_decision = UP
-            elif angle > -3*np.pi/4:
-                self.current_decision = LEFT
-            else:
-                self.current_decision = DOWN
+    def observe(self, observation):
+        self.angle = get_agent_angle(observation["other_agents_pos"][-1])
 
-    def act(self):
+    def decide(self):
+        if np.pi/4 <= self.angle < 3*np.pi/4:
+            self.current_decision = UP
+        elif 3*np.pi/4 <= self.angle < 5*np.pi/4:
+            self.current_decision = LEFT
+        elif 5*np.pi/4 <= self.angle < 7*np.pi/4:
+            self.current_decision = DOWN
+        elif 7*np.pi/4 <= self.angle < 2*np.pi or 0 <= self.angle < np.pi/4:
+            self.current_decision = RIGHT
+
         return self.current_decision
