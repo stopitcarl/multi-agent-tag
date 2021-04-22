@@ -102,7 +102,4 @@ class PreyDangerCircle(Agent):
 
     def get_distance_normal(self, distance, magnitude):
         x = np.linspace(-self.N / 2, self.N / 2, self.N)
-        return stats.norm.pdf(x, 0, 1 / distance) * 1 / distance * self.N * magnitude
-
-    def act(self):
-        return self.current_decision
+        return stats.norm.pdf(x, 0, 1 / distance) * 1 / distance * self.N * magnitudea
