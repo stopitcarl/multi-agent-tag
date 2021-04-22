@@ -16,14 +16,13 @@ env.reset()
 
 # setup actions
 actions = {agent: 0 for agent in env.agents}
-actions
 
 # setup agents
-agents = {}
-agents['adversary_0'] = PredatorBaseline()
-agents['adversary_1'] = PredatorBaseline()
-# agents['agent_0'] = PreyBaseline(env)
-agents['agent_0'] = PreyDangerCircle()
+agents = {
+    'adversary_0': PredatorBaseline(),
+    'adversary_1': PredatorBaseline(),
+    'agent_0': PreyDangerCircle()
+}
 
 # game loop
 for step in range(MAX_CYCLES):
@@ -34,12 +33,12 @@ for step in range(MAX_CYCLES):
 
     # decision process
     for name, agent in agents.items():
-        agent.observe(observations[name])
-        agent.decide()
+        obs = decode(observations[name])
+        agent.observe(obs)
 
     # action process
     for name, agent in agents.items():
-        actions[name] = agent.act()
+        actions[name] = agent.decide()
 
 print("done")
 env.close()
