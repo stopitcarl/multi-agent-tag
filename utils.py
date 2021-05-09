@@ -35,7 +35,7 @@ def decode(observation: list):
         'obstacle_pos': [observation[4 + i * 2:4 + i * 2 + 2] for i in range(NUM_OBSTACLES)],
         'other_agents_pos': [observation[4 + 2 * NUM_OBSTACLES + 2 * i:4 + 2 * NUM_OBSTACLES + 2 * i + 2] for i in
                              range(NUM_ADVERSARIES)],
-        'prey_velocity': observation[-2:0]  # will only work if observation is from predator, otherwise it will be garbage
+        'prey_velocity': observation[-2:]  # will only work if observation is from predator, otherwise it will be garbage
     }
 
 
