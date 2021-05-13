@@ -18,11 +18,8 @@ env.reset()
 actions = {agent: 0 for agent in env.agents}
 
 # setup agents
-agents = {
-    'adversary_0': PredatorBaseline(),
-    'adversary_1': PredatorBaseline(),
-    'agent_0': PreyDangerCircle()
-}
+agents = {f'adversary_{i}': PredatorBaseline() for i in range(NUM_ADVERSARIES)}
+agents.update({f'agent_{i}': PreyDangerCircle() for i in range(NUM_GOOD)})
 
 # game loop
 for step in range(MAX_CYCLES):
