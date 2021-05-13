@@ -8,7 +8,7 @@ class PredatorBaseline(Agent):
         self.angle = 0
 
     def observe(self, observation):
-        self.angle = get_agent_angle(observation["other_agents_pos"][-1])
+        self.angle = get_angle(observation["other_agents_pos"][-1])
 
     def decide(self):
         if np.pi/4 <= self.angle < 3*np.pi/4:
