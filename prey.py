@@ -48,8 +48,8 @@ class PreyDangerCircle(Agent):
         self.calculate_danger(
             observation["self_pos"], observation["other_agents_pos"], observation["obstacle_pos"])
         self.speed = observation["self_vel"]
-        print(observation["self_pos"])
-        #print(self.speed)
+        # print(observation["self_pos"])
+        # print(self.speed)
 
     def decide(self):
         angle = self.decide_angle()
@@ -81,7 +81,7 @@ class PreyDangerCircle(Agent):
             0.3, (center_distance**(2)))
 
         self.danger = self.add_danger(center_danger, angle)
-        #self.show_danger()
+        # self.show_danger()
 
     def decide_angle(self):
         directions = 8
@@ -119,15 +119,15 @@ class PreyDangerCircle(Agent):
         ax = plt.subplot()
         ax = plt.subplot(projection='polar')
         self.rects = ax.bar(self.theta, self.danger, width=self.width,
-               bottom=0.0, color=self.colors, alpha=0.5)
+                            bottom=0.0, color=self.colors, alpha=0.5)
         #ax.set_ylim(0, 20)
-        
-        # def animate():                        
+
+        # def animate():
         #     for rect, h in zip(self.rects, self.danger):
         #         rect.set_height(h)
         #     return self.rects
 
-        # ani = animation.FuncAnimation(fig, animate, blit=True, interval=100,                                      
+        # ani = animation.FuncAnimation(fig, animate, blit=True, interval=100,
         #                               repeat=True)
         plt.show()
 
@@ -140,6 +140,10 @@ class Vector:
     def __init__(self, angle):
         self.x = np.cos(angle)
         self.y = np.sin(angle)
+
+        norm = np.sqrt(self.x**2 + self.y**2)
+        self.x /= norm
+        self.y /= norm
 
     def to_action(self):
         if abs(self.x) >= abs(self.y):
