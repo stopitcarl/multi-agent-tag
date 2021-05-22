@@ -5,9 +5,9 @@ SEED = 42
 # SEED = np.random.randint(100)
 
 NUM_GOOD = 1
-NUM_ADVERSARIES = 2
+NUM_ADVERSARIES = 3
 NUM_OBSTACLES = 2
-MAX_CYCLES = 300
+MAX_CYCLES = 50
 
 # observations
 # [self_vel, self_pos, landmark_rel_positions, other_agent_rel_positions, other_agent_velocities]
