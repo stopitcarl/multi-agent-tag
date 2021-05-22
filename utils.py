@@ -7,7 +7,7 @@ SEED = 42
 NUM_GOOD = 1
 NUM_ADVERSARIES = 3
 NUM_OBSTACLES = 2
-MAX_CYCLES = 50
+MAX_CYCLES = 100
 
 # observations
 # [self_vel, self_pos, landmark_rel_positions, other_agent_rel_positions, other_agent_velocities]
