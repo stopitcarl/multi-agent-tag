@@ -5,17 +5,14 @@ from tensorflow import keras
 
 def create_model():
     model = keras.Sequential([
-        keras.layers.Dense(12 + (NUM_ADVERSARIES-1) * 2, input_shape=(12 + (NUM_ADVERSARIES-1) * 2,), activation="relu",
-                           kernel_initializer='zeros', bias_initializer='zeros'),
+        keras.layers.Dense(12 + (NUM_ADVERSARIES - 1) * 2, input_shape=(12 + (NUM_ADVERSARIES - 1) * 2,),
+                           activation="relu",
+                           kernel_initializer='random_normal', bias_initializer='zeros'),
         keras.layers.Dense(20, activation="relu",
-                           kernel_initializer='zeros', bias_initializer='zeros'),
+                           kernel_initializer='random_normal', bias_initializer='zeros'),
         keras.layers.Dense(5 * NUM_ADVERSARIES, activation="softmax",
-                           kernel_initializer='zeros', bias_initializer='zeros')
+                           kernel_initializer='random_normal', bias_initializer='zeros')
     ])
-
-    model.compile(optimizer="adam",
-                  loss="sparse_categorical_crossentropy",
-                  metrics=["accuracy"])
 
     return model
 
@@ -24,7 +21,19 @@ def gaussian_perturbation(sigma):
     return np.random.normal(0, abs(sigma))
 
 
+def encode_neural_input(observation):
+    neural_input = np.concatenate([
+        observation["self_vel"],
+        observation["self_pos"],
+        np.concatenate(observation["obstacle_pos"]),
+        np.concatenate(observation["other_agents_pos"]),
+        observation["prey_velocity"]
+    ])
+    return np.atleast_2d(neural_input)
+
+
 class NeuralNetwork:
+
     def __init__(self, perturbation_func, mutation_prob):
         self.perturbation_func = perturbation_func
         self.mutation_prob = mutation_prob
@@ -60,17 +69,7 @@ class NeuralNetwork:
         self.fitness = score
 
     def predict(self, observation):
-        neural_input = np.concatenate([
-            observation["self_vel"],
-            observation["self_pos"],
-            np.concatenate(observation["obstacle_pos"]),
-            np.concatenate(observation["other_agents_pos"]),
-            observation["prey_velocity"]
-        ])
-
-        neural_input = np.atleast_2d(neural_input)
-
-        prediction = self.model.predict(neural_input)[0]
+        prediction = self.model.predict(encode_neural_input(observation))[0]
         return [np.argmax(prediction[i:i + 5]) for i in range(0, len(prediction), 5)]
 
     def mutate(self, SSP):
@@ -105,6 +104,7 @@ class PredatorMutationBasedGeneticController:
         self.scheduled_mutation = scheduled_mutation
         self.population = []
         self.model = None
+        self.decisions = [LEFT, LEFT, LEFT]
 
     def initialize_population(self):
         self.population = [
@@ -191,5 +191,12 @@ class PredatorMutationBasedGeneticController:
         self.population.sort(key=lambda x: x.fitness)
         self.population[-1].model.save("models/MGNN" + str(gen) + ".h5")
 
-    def load_model(self):
-        self.model = keras.models.load_model("models/MGNN.h5", compile=False)
+    def load_model(self, path="models/MGNN.h5"):
+        self.model = keras.models.load_model(path, compile=False)
+
+    def observe(self, observation):
+        prediction = self.model.predict(encode_neural_input(observation))[0]
+        self.decisions = [np.argmax(prediction[i:i + 5]) for i in range(0, len(prediction), 5)]
+
+    def decide(self):
+        return self.decisions
