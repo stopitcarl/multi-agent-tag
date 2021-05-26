@@ -1,0 +1,29 @@
+Prey vs Predators
+
+dqn vs dqn
+-------------Statistics-------------
+Average distance to center:  0.8470271172508912
+Average distance predators-prey:  1.0315756953079582
+Average time until capture:  23.65
+Average number of collisions:  12.84
+
+baseline vs dqn
+-------------Statistics-------------
+Average distance to center:  1.0247061576781094
+Average distance predators-prey:  0.9964058064049843
+Average time until capture:  38.875
+Average number of collisions:  3.01
+
+dqn vs baseline
+-------------Statistics-------------
+Average distance to center:  0.8058932806725445
+Average distance predators-prey:  0.7855742238628942
+Average time until capture:  20.416666666666668
+Average number of collisions:  8.41
+
+baseline vs baseline
+-------------Statistics-------------
+Average distance to center:  0.9788218939740977
+Average distance predators-prey:  0.9351698484558189
+Average time until capture:  24.92
+Average number of collisions:  0.39

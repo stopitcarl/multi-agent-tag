@@ -3,37 +3,12 @@ import scipy.stats as stats
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+import utils
 from agent import Agent
 from utils import *
 
 
 class PreyBaseline(Agent):
-    def __init__(self):
-        super().__init__()
-        self.step = 0
-
-    def observe(self, observation):
-        pass
-
-    def decide(self):
-        self.step += 1
-
-        if self.step % 20:
-            return self.current_decision
-
-        if self.current_decision == LEFT:
-            self.current_decision = DOWN
-        elif self.current_decision == DOWN:
-            self.current_decision = RIGHT
-        elif self.current_decision == RIGHT:
-            self.current_decision = UP
-        elif self.current_decision == UP:
-            self.current_decision = LEFT
-
-        return self.current_decision
-
-
-class PreyDangerCircle(Agent):
     def __init__(self):
         super().__init__()
         self.N = 41
@@ -45,6 +20,7 @@ class PreyDangerCircle(Agent):
         self.rects = None
 
     def observe(self, observation):
+        observation = utils.decode(observation)
         self.calculate_danger(
             observation["self_pos"], observation["other_agents_pos"], observation["obstacle_pos"])
         self.speed = observation["self_vel"]
@@ -78,7 +54,7 @@ class PreyDangerCircle(Agent):
         center_distance = get_distance(coords) + 0.2
         angle = get_angle(coords)
         center_danger = self.get_distance_normal(
-            0.3, (center_distance**(2)))
+            0.3, (center_distance ** (2)))
 
         self.danger = self.add_danger(center_danger, angle)
         # self.show_danger()
@@ -112,7 +88,7 @@ class PreyDangerCircle(Agent):
         offset = (N - int(angle * N / (2 * np.pi) - N / 2)) % N
         # print(offset)
         danger = self.danger - \
-            np.concatenate((new_danger[offset:], new_danger[:offset]))
+                 np.concatenate((new_danger[offset:], new_danger[:offset]))
         return danger
 
     def show_danger(self):
@@ -120,7 +96,7 @@ class PreyDangerCircle(Agent):
         ax = plt.subplot(projection='polar')
         self.rects = ax.bar(self.theta, self.danger, width=self.width,
                             bottom=0.0, color=self.colors, alpha=0.5)
-        #ax.set_ylim(0, 20)
+        # ax.set_ylim(0, 20)
 
         # def animate():
         #     for rect, h in zip(self.rects, self.danger):
@@ -141,7 +117,7 @@ class Vector:
         self.x = np.cos(angle)
         self.y = np.sin(angle)
 
-        norm = np.sqrt(self.x**2 + self.y**2)
+        norm = np.sqrt(self.x ** 2 + self.y ** 2)
         self.x /= norm
         self.y /= norm
 

@@ -1,3 +1,4 @@
+import utils
 from agent import Agent
 from utils import *
 
@@ -8,6 +9,7 @@ class PredatorBaseline(Agent):
         self.angle = 0
 
     def observe(self, observation):
+        observation = utils.decode(observation)
         self.angle = get_angle(observation["other_agents_pos"][-1])
 
     def decide(self):
