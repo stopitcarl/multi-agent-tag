@@ -19,6 +19,10 @@ class PreyBaseline(Agent):
         super().__init__()
         self.step = 0
 
+    def reset(self):
+        self.current_decision = LEFT
+        self.step = 0
+
     def observe(self, observation):
         pass
 

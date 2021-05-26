@@ -1,10 +1,5 @@
-import itertools
-
 from agent import Agent
 from utils import *
-import tensorflow as tf
-from tensorflow import keras
-import multiprocessing as mp
 
 
 class PredatorBaseline(Agent):

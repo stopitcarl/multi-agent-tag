@@ -5,6 +5,7 @@ from pettingzoo.mpe import simple_tag_v2
 from predator import PredatorBaseline
 from PredatorMutationBasedGeneticController import PredatorMutationBasedGeneticController
 from prey import PreyBaseline, PreyDangerCircle
+from agent import SmartAgent, SmartController
 from utils import *
 
 # setup environment
@@ -13,24 +14,16 @@ env = simple_tag_v2.parallel_env(
     num_obstacles=NUM_OBSTACLES, max_cycles=MAX_CYCLES)
 env.reset()
 
-controller = PredatorMutationBasedGeneticController(
-    env,
-    PreyBaseline(),
-    1000,
-    100,
-    200,
-    ranked_selection=False,
-    scheduled_mutation=True
-)
-controller.load_model("models/MGNN.h5")
-
 # setup actions
 actions = {agent: 0 for agent in env.agents}
 
-# setup agents
-prey = PreyBaseline()
+controller = SmartController("models/PyGad13.h5")
 
-env.seed(seed=SEED)
+# setup agents
+prey = SmartAgent("models/DangerZone.h5")
+# prey = PreyDangerCircle()
+
+# env.seed(seed=SEED)
 env.reset()
 
 # game loop
@@ -39,8 +32,8 @@ for step in range(MAX_CYCLES):
     observations, rewards, dones, infos = env.step(actions)
     time.sleep(0.1)
 
-    prey.observe(decode(observations["agent_0"]))
-    controller.observe(decode(observations["adversary_0"]))
+    prey.observe(observations["agent_0"])
+    controller.observe(observations["adversary_0"])
 
     predatorActions = controller.decide()
 
