@@ -30,9 +30,9 @@ def create_model():
     inputs = keras.Input(shape=(12 + (NUM_ADVERSARIES - 1) * 2,))
     dense_input = keras.layers.Dense(12 + (NUM_ADVERSARIES - 1) * 2, activation="tanh",
                                      kernel_initializer='random_normal', bias_initializer='random_normal')
-    dense_hidden1 = keras.layers.Dense(15, activation="tanh",
+    dense_hidden1 = keras.layers.Dense(64, activation="tanh",
                                        kernel_initializer='random_normal', bias_initializer='random_normal')
-    dense_hidden2 = keras.layers.Dense(10, activation="tanh",
+    dense_hidden2 = keras.layers.Dense(64, activation="tanh",
                                        kernel_initializer='random_normal', bias_initializer='random_normal')
 
     dense_outputs = []
@@ -109,18 +109,18 @@ env.reset()
 
 prey = SmartAgent("models/double_drop_layer_best.h5")
 
-model = keras.models.load_model("models/PyGad29old.h5", compile=False)
-# model = create_model()
+# model = keras.models.load_model("models/PyGad27old.h5", compile=False)
+model = create_model()
 keras_ga = pygad.kerasga.KerasGA(model=model,
-                                 num_solutions=50)
+                                 num_solutions=100)
 
-num_generations = 250
-num_parents_mating = 25
+num_generations = 1000
+num_parents_mating = 50
 initial_population = keras_ga.population_weights
 parent_selection_type = "sss"
 crossover_type = "single_point"
 mutation_type = "random"
-mutation_percent_genes = 10
+mutation_percent_genes = 20
 keep_parents = -1
 
 ga_instance = pygad.GA(num_generations=num_generations,
