@@ -107,9 +107,9 @@ env = simple_tag_v2.parallel_env(
     num_obstacles=NUM_OBSTACLES, max_cycles=MAX_CYCLES)
 env.reset()
 
-prey = SmartAgent("models/DangerZone.h5")
+prey = SmartAgent("models/double_drop_layer_best.h5")
 
-model = keras.models.load_model("models/PyGadGlitch.h5", compile=False)
+model = keras.models.load_model("models/PyGad29old.h5", compile=False)
 # model = create_model()
 keras_ga = pygad.kerasga.KerasGA(model=model,
                                  num_solutions=50)
@@ -120,7 +120,7 @@ initial_population = keras_ga.population_weights
 parent_selection_type = "sss"
 crossover_type = "single_point"
 mutation_type = "random"
-mutation_percent_genes = 40
+mutation_percent_genes = 10
 keep_parents = -1
 
 ga_instance = pygad.GA(num_generations=num_generations,

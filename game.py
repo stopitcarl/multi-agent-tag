@@ -3,7 +3,6 @@ import time
 from pettingzoo.mpe import simple_tag_v2
 
 from predator import PredatorBaseline
-from PredatorMutationBasedGeneticController import PredatorMutationBasedGeneticController
 from prey import PreyBaseline, PreyDangerCircle
 from agent import SmartAgent, SmartController
 from utils import *
@@ -17,7 +16,7 @@ env.reset()
 # setup actions
 actions = {agent: 0 for agent in env.agents}
 
-controller = SmartController("models/PyGad13.h5")
+controller = SmartController("models/PyGad27.h5")
 
 # setup agents
 prey = SmartAgent("models/DangerZone.h5")
