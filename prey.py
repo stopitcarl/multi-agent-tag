@@ -9,8 +9,11 @@ from utils import *
 
 
 class PreyBaseline(Agent):
-    def __init__(self):
+    def __init__(self, n_predators, n_prey, n_obstacles):
         super().__init__()
+        self.n_predators = n_predators
+        self.n_prey = n_prey
+        self.n_obstacles = n_obstacles
         self.N = 41
         self.danger = np.ones(self.N) * 20
         self.theta = np.linspace(0.0, 2 * np.pi, self.N, endpoint=False)
@@ -20,7 +23,7 @@ class PreyBaseline(Agent):
         self.rects = None
 
     def observe(self, observation):
-        observation = utils.decode(observation)
+        observation = utils.decode(observation, self.n_predators, self.n_obstacles)
         self.calculate_danger(
             observation["self_pos"], observation["other_agents_pos"], observation["obstacle_pos"])
         self.speed = observation["self_vel"]
@@ -54,7 +57,7 @@ class PreyBaseline(Agent):
         center_distance = get_distance(coords) + 0.2
         angle = get_angle(coords)
         center_danger = self.get_distance_normal(
-            0.3, (center_distance ** (2)))
+            0.3, (center_distance ** 2))
 
         self.danger = self.add_danger(center_danger, angle)
         # self.show_danger()

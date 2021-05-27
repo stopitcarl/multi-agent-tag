@@ -28,7 +28,8 @@ class Monitor:
 
         for name in self.predator_names:
             self.predator_positions[name] += [utils.get_own_pos(observations[name])]
-            self.predator_prey_positions[name] += [utils.get_other_pos(observations[name])[-2:]]
+            self.predator_prey_positions[name] += [
+                utils.get_other_pos(observations[name], self.n_predators, self.n_obstacles)[-2:]]
 
         if rewards[self.predator_names[0]] > 0:
             self.collisions[self.game] += [self.game_step]

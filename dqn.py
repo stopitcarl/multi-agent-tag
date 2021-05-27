@@ -1,5 +1,4 @@
 import time
-
 from agent import Agent
 import numpy as np
 import tensorflow as tf

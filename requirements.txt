@@ -1,7 +1,8 @@
-numpy==1.19.4
-PettingZoo==1.6.1
-scipy==1.5.2
-matplotlib==3.3.3
-tensorflow_gpu==2.4.1
-tqdm==4.60.0
-tensorflow==2.5.0
+numpy
+PettingZoo
+scipy
+matplotlib
+tensorflow_gpu
+tqdm
+tensorflow
+click
