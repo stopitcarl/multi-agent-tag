@@ -15,6 +15,7 @@ class Monitor:
         self.steps = 0
         self.game = 0
         self.game_step = 0
+        self.prey_reward = 0
 
         self.prey_positions = {name: [] for name in prey_names}
         self.predator_positions = {name: [] for name in predator_names}
@@ -24,15 +25,19 @@ class Monitor:
 
     def log(self, observations, rewards):
         for name in self.prey_names:
-            self.prey_positions[name] += [utils.get_own_pos(observations[name])]
+            self.prey_positions[name] += [
+                utils.get_own_pos(observations[name])]
 
         for name in self.predator_names:
-            self.predator_positions[name] += [utils.get_own_pos(observations[name])]
+            self.predator_positions[name] += [
+                utils.get_own_pos(observations[name])]
             self.predator_prey_positions[name] += [
                 utils.get_other_pos(observations[name], self.n_predators, self.n_obstacles)[-2:]]
 
         if rewards[self.predator_names[0]] > 0:
             self.collisions[self.game] += [self.game_step]
+
+        self.prey_reward += rewards['agent_0']
 
         self.steps += 1
         self.game_step += 1
@@ -59,9 +64,17 @@ class Monitor:
             for step in range(self.steps)
             for name in self.prey_names])
 
+    def average_prey_reward(self):
+        return np.average(self.prey_reward / (self.steps_per_game * self.game))
+
     def stats(self):
         print("-------------Statistics-------------")
-        print("Average distance to center: ", self.average_distance_to_center())
-        print("Average distance predators-prey: ", self.average_distance_predator_prey())
-        print("Average time until capture: ", self.average_steps_until_capture())
-        print("Average number of collisions: ", self.average_number_collisions())
+        print("Average distance to center: ",
+              self.average_distance_to_center())
+        print("Average distance predators-prey: ",
+              self.average_distance_predator_prey())
+        print("Average time until capture: ",
+              self.average_steps_until_capture())
+        print("Average number of collisions: ",
+              self.average_number_collisions())
+        print("Prey reward: ", self.average_prey_reward())

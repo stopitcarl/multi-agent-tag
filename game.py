@@ -1,7 +1,9 @@
 import time
+import imageio
 
 from pettingzoo.mpe import simple_tag_v2
 import click
+
 
 
 def load_baseline_prey(n_predators, n_prey, n_obstacles):
@@ -77,24 +79,29 @@ def run_game(n_predators, n_prey, n_obstacles, n_games, steps_per_game, prey, pr
                           prey_names=[f"agent_{i}" for i in range(n_prey)],
                           predator_names=[f"adversary_{i}" for i in range(n_predators)])
 
-    # game loop
-    for game in range(n_games):
+        
+    
+    
+
+    # game loop    
+    for j in range(n_games):
+        game_img = []
         state = env.reset()
-        for _ in range(steps_per_game):
-            env.render()
+        for i in range(steps_per_game):
+            game_img.append(env.render("rgb_array"))
 
             actions = {}
-            time.sleep(0.01)
+            time.sleep(0.05)
 
             for name, agent in agents.items():
                 agent.observe(state[name])
                 actions[name] = agent.decide()
 
-            state, rewards, done, _ = env.step(actions)
+            state, rewards, done, _ = env.step(actions)           
 
             if display_stats:
                 monitor.log(state, rewards)
-
+        imageio.mimsave(f'movie-{j}.gif', game_img)
     env.close()
 
     if display_stats:
